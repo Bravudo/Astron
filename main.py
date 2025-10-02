@@ -4,13 +4,14 @@ from src.commands.testcommands import general_setup
 from src.views.newinserver import newpeople_setup
 from src.services.bloxlink import bloxlink_setup
 
+
 async def main():
     await general_setup(bot)
     await newpeople_setup(bot)
     await bloxlink_setup(bot)
 #await setups primeiro e depois o try
     try:
-        print('Bot Online')
+        print('Presença: Online')
         await bot.start(token)
     except Exception as e:
         print(f'Erro ao inicializar o bot: {e}')
