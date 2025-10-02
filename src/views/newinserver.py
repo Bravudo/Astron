@@ -35,6 +35,7 @@ class Register(discord.ui.View):
         await interaction.response.send_message("Executado com sucesso", ephemeral=True)
 
 @commands.command()
+@commands.has_permissions(administrator=True)
 async def spawn_register(ctx):
     view = Register()
     await ctx.send("Clique no botão para se Registrar!", view=view)

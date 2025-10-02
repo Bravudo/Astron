@@ -32,7 +32,7 @@ async def findroblox(ctx, member):
                 return
 
             if not api_key:
-                await sender("Erro: chave da api não configurada")
+                print("Erro: chave da api não configurada")
             else: 
                 try: 
                     url = f"https://api.blox.link/v4/public/guilds/{guild_id}/discord-to-roblox/{discord_id}"
@@ -59,18 +59,34 @@ async def findroblox(ctx, member):
                                      roblox_displayname=roblox_displayname
                                 )
                             else: 
-                                 await sender(f'Erro Roblox: Busca não realizada')
+                                print('Erro Roblox: Busca não realizada')
+                                return None
+                        return {
+                             "roblox_id": roblox_id,
+                             "roblox_username": roblox_username,
+                             "roblox_displayname": roblox_displayname
+                        }
 
-                    elif response.status_code in [404,204]:
-                        print((f'Usuário não vinculado ao BloxLink'))
-                        print("URL chamada:", url)
-                        print("Status:", response.status_code)
-                        print("Conteúdo:", response.text)
-                        await sender(f'Usuário não vinculado ao BloxLink.')
+                    elif response.status_code in [404, 204]:
+                            print("Usuário não vinculado ao BloxLink")
+                            print("URL chamada:", url)
+                            print("Status:", response.status_code)
+                            print("Conteúdo:", response.text)
+                            await send_register_embed(
+                                logchannel, 
+                                member.id,
+                                join_number="000",
+                                roblox_id=None,
+                                roblox_username=None,
+                                roblox_displayname=None
+                            )
+                            return None
                     else:
-                            await sender(f"Erro API: {response.status_code}")
+                         print(f"Erro API: {response.status_code}")
+                         return None
                 except requests.RequestException as e:
-                        await sender(f"Erro no blox link: {e}")
+                        print(f"Erro no blox link: {e}")
+                        return None
 
 @commands.command()
 async def find(ctx, member: discord.Member = None):
