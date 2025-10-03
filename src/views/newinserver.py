@@ -1,8 +1,7 @@
 import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
-
-
+from src.json.jsoncommands import load, save, file_name
 #Cargos de Entrada
 #Retirar
 noverify = 1420818499437330524
@@ -25,6 +24,27 @@ class Register(discord.ui.View):
         user = interaction.user
         await interaction.response.defer(ephemeral=True)
         
+        data = load(file_name)
+        uid = str(user.id)
+        if uid in data["user"]:
+             join_number = data["user"][uid]["entrada"]
+             apelido = user.nick or user.name
+             new_name = f"⥼ {join_number} ⥽ {apelido}"
+             if len(new_name) > 32:
+                  new_name = new_name[:32]
+             await user.edit(nick=new_name)
+             
+             
+        else:
+            join_number = data["server"]["status"]["nextjoin"]
+            apelido = user.nick or user.name
+            new_name = f"⥼ {join_number} ⥽ {apelido}"
+            if len(new_name) > 32:
+                  new_name = new_name[:32]
+            await user.edit(nick=new_name)
+            data["user"][uid] = {"entrada": data["server"]["status"]["nextjoin"] }
+            data["server"]["status"]["nextjoin"] += 1
+            save(data, file_name)
 
 
         #Repassando a lista de cargos
@@ -37,6 +57,8 @@ class Register(discord.ui.View):
 
         #Pesquisa sobre informações do roblox
         await findroblox(interaction, user)
+
+
 
 
 @commands.command()

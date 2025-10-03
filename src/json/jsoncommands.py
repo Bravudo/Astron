@@ -2,14 +2,6 @@ import json
 import os
 pasta = "src/json"
 file_name = "astryn.json"
-datatest = {
-   "server": {
-    "status":{"nextjoin": 1 }
-    },
-    "user":{
-        "893635049629577216":{"entrada": 0, "nivel": 2}
-    }
-}
 
 def get_path(filename: str):
     os.makedirs(pasta, exist_ok=True)

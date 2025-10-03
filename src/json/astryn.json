@@ -1,8 +1,12 @@
 {
     "server": {
         "status": {
-            "nextjoin": 0
+            "nextjoin": 1
         }
     },
-    "user": {}
+    "user": {
+        "893635049629577216": {
+            "entrada": 0
+        }
+    }
 }

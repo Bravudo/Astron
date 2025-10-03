@@ -2,9 +2,12 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from src.embeds.registerlog import send_register_embed 
+from src.json.jsoncommands import load, file_name, save
 import os
 import requests
 load_dotenv()
+
+
 
 
 registerlogchat = 1422434707416547500
@@ -13,6 +16,9 @@ roblox_user = "https://users.roblox.com/v1/usernames/users"
 
 
 async def findroblox(ctx, member):
+            dados = load(file_name)
+            uid = str(member.id)
+            join_number = dados["user"].get(uid, {}).get("entrada", 0)
             
             guild_id = ctx.guild.id
             discord_id = member.id
@@ -24,8 +30,6 @@ async def findroblox(ctx, member):
             else:
                 sender = ctx.send
                 logchannel = ctx.guild.get_channel(registerlogchat)
-
-
 
             if member is None:
                 await sender("Marque quem você quer procurar! Ex: !find @Tonhao")
@@ -50,10 +54,12 @@ async def findroblox(ctx, member):
                                 roblox_username = roblox_data.get("name")
                                 roblox_displayname = roblox_data.get("displayName") 
                                 print((f'id: {roblox_id}, user:{roblox_username}'))
+                            
+              
                                 await send_register_embed(
                                      logchannel, 
                                      member.id,
-                                     join_number="000",
+                                     join_number=join_number,
                                      roblox_id=roblox_id,
                                      roblox_username=roblox_username,
                                      roblox_displayname=roblox_displayname
@@ -75,7 +81,7 @@ async def findroblox(ctx, member):
                             await send_register_embed(
                                 logchannel, 
                                 member.id,
-                                join_number="000",
+                                join_number=join_number,
                                 roblox_id=None,
                                 roblox_username=None,
                                 roblox_displayname=None
