@@ -5,11 +5,11 @@ from src.views.newinserver import newpeople_setup
 from src.services.bloxlink import bloxlink_setup
 
 
+
 async def main():
     await general_setup(bot)
     await newpeople_setup(bot)
     await bloxlink_setup(bot)
-#await setups primeiro e depois o try
     try:
         print('Presença: Online')
         await bot.start(token)
