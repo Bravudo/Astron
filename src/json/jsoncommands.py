@@ -17,6 +17,7 @@ def load(filename: str) -> dict:
     with open(path, "r", encoding="utf-8") as file:
         return json.load(file)
 
+#Caso o arquivo não exista, criar uma base dele
 try:
     data = load(file_name)
 except (FileNotFoundError, json.decoder.JSONDecodeError):

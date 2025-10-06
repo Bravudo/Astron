@@ -2,7 +2,9 @@ import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
 from src.json.jsoncommands import load, save, file_name
-#Cargos de Entrada
+
+
+#----Cargos-----#
 #Retirar
 noverify = 1420818499437330524
 
@@ -12,6 +14,7 @@ verify = 1420859819950215278
 
 add_member_roles = [member, verify]
 remove_member_roles = [noverify]
+#---------------#
 
 
 class Register(discord.ui.View):
@@ -24,23 +27,30 @@ class Register(discord.ui.View):
         user = interaction.user
         await interaction.response.defer(ephemeral=True)
         
+        #Carregar dados atuais e realizar a busca
         data = load(file_name)
         uid = str(user.id)
+
+        #Se o usuario já tiver entrado, recarrega seu número já salvo
         if uid in data["user"]:
              join_number = data["user"][uid]["entrada"]
              apelido = user.nick or user.name
-             new_name = f"⥼ {join_number} ⥽ {apelido}"
+             new_name = f"⥼ {join_number} ⥽ ASR {apelido}"
+
              if len(new_name) > 32:
                   new_name = new_name[:32]
+                  
              await user.edit(nick=new_name)
              
-             
+        #Se o usuario for novo, cria novas informações no json para salvar.
         else:
             join_number = data["server"]["status"]["nextjoin"]
             apelido = user.nick or user.name
-            new_name = f"⥼ {join_number} ⥽ {apelido}"
+            new_name = f"⥼ {join_number} ⥽ ASR {apelido}"
+
             if len(new_name) > 32:
                   new_name = new_name[:32]
+
             await user.edit(nick=new_name)
             data["user"][uid] = {"entrada": data["server"]["status"]["nextjoin"] }
             data["server"]["status"]["nextjoin"] += 1
