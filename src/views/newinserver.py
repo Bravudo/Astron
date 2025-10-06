@@ -4,6 +4,7 @@ from src.services.bloxlink import findroblox
 from src.json.jsoncommands import load, save, file_name
 
 
+
 #----Cargos-----#
 #Retirar
 noverify = 1420818499437330524
@@ -15,6 +16,8 @@ verify = 1420859819950215278
 add_member_roles = [member, verify]
 remove_member_roles = [noverify]
 #---------------#
+clanTag = "ASR"
+
 
 
 class Register(discord.ui.View):
@@ -35,7 +38,7 @@ class Register(discord.ui.View):
         if uid in data["user"]:
              join_number = data["user"][uid]["entrada"]
              apelido = user.nick or user.name
-             new_name = f"⥼ {join_number} ⥽ ASR {apelido}"
+             new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
 
              if len(new_name) > 32:
                   new_name = new_name[:32]
@@ -46,7 +49,8 @@ class Register(discord.ui.View):
         else:
             join_number = data["server"]["status"]["nextjoin"]
             apelido = user.nick or user.name
-            new_name = f"⥼ {join_number} ⥽ ASR {apelido}"
+            ##
+            new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
 
             if len(new_name) > 32:
                   new_name = new_name[:32]
