@@ -17,11 +17,11 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 @commands.command()
-async def search_dc_user_db(discord_id):
-    cursor.execute("SELECT dc_id, join_numebr, roblox_id, roblox_name, roblox_display FROM dc_user WHERE id %s", ({discord_id},))
+async def search_dc_user_db(ctx, discord_id):
+    cursor.execute("SELECT dc_id, join_numebr, roblox_id, roblox_name, roblox_display FROM dc_user WHERE id = %s", ({discord_id},))
     user = cursor.fetchone()
     if user:
-        dc_id, join_numebr, roblox_id, roblox_name, roblox_display = user
+        dc_id, join_number, roblox_id, roblox_name, roblox_display = user
         print(user)
 
 
