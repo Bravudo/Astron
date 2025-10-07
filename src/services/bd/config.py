@@ -15,7 +15,6 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 print(db)
-cursor.execute("ALTER TABLE dc_user MODIFY id INT AUTO_INCREMENT PRIMARY KEY")
     
 
 async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_display):
