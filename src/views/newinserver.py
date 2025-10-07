@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
 from src.json.jsoncommands import load, save, file_name
+from src.services.bd.config import search_last_number
 
 
 
@@ -33,10 +34,9 @@ class Register(discord.ui.View):
         #Carregar dados atuais e realizar a busca
         data = load(file_name)
         uid = str(user.id)
-
+        join_number = (await search_last_number()) + 1
         #Se o usuario já tiver entrado, recarrega seu número já salvo
         if uid in data["user"]:
-             join_number = data["user"][uid]["entrada"]
              apelido = user.nick or user.name
              new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
 
@@ -47,10 +47,9 @@ class Register(discord.ui.View):
              
         #Se o usuario for novo, cria novas informações no json para salvar.
         else:
-            join_number = data["server"]["status"]["nextjoin"]
             apelido = user.nick or user.name
-            ##
             new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
+            
 
             if len(new_name) > 32:
                   new_name = new_name[:32]
