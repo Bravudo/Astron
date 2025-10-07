@@ -3,7 +3,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from src.embeds.registerlog import send_register_embed 
 from src.json.jsoncommands import load, file_name, save
-from src.services.bd.config import save_db_new_user
+from src.services.bd.config import save_db_new_user, search_last_number
 import os
 import requests
 load_dotenv()
@@ -19,7 +19,7 @@ roblox_user = "https://users.roblox.com/v1/usernames/users"
 async def findroblox(ctx, member):
             dados = load(file_name)
             uid = str(member.id)
-            join_number = dados["user"].get(uid, {}).get("entrada", 0)
+            join_number = (await search_last_number()) + 1
             
             guild_id = ctx.guild.id
             discord_id = member.id
@@ -91,6 +91,10 @@ async def findroblox(ctx, member):
                                 roblox_username=None,
                                 roblox_displayname=None
                             )
+                            try:
+                                await save_db_new_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
+                            except Exception as e:
+                                print(f'Erro ao tentar salvar os dados: {e}')
                             return None
                     else:
                          print(f"Erro API: {response.status_code}")

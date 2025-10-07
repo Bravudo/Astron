@@ -24,6 +24,17 @@ async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_di
     except Exception as e:
         print(f'Erro: {e}')
 
+
+async def search_last_number():
+    try:
+        cursor.execute("SELECT MAX(join_number) as join_number FROM dc_user")
+        result = cursor.fetchone()
+        last = result['join_number'] or 0
+        print(f'Ultimo número existente: {last}')
+        return last
+    except Exception as e:
+        print(f'Erro ao acessar o ultimo número de entrada: {e}')
+
 @commands.command()
 async def view_register(ctx):
     try:
