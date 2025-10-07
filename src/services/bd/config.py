@@ -20,6 +20,7 @@ print(db)
 async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_display):
     try:
         cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ('{dc_id}', '{join_number}', '{roblox_id}', '{roblox_name}', '{roblox_display}')")
+        #db.commit() PARA SALVAR OS DADOS INSERIDOS
     except Exception as e:
         print(f'Erro: {e}')
 
@@ -35,8 +36,7 @@ async def view_register(ctx):
 
         # Se vier como tupla (sem dictionary=True)
         for row in results:
-            dc_id, join_number, roblox_id, roblox_name, roblox_display = row
-            print(f"DC ID: {dc_id} | Join#: {join_number} | Roblox: {roblox_name} ({roblox_display})")
+            print(f"DC ID: {row['dc_id']} | Join#: {row['join_number']} | Roblox: {row['roblox_name']} ({row['roblox_display']})")
 
         await ctx.send("Console railway")
 
