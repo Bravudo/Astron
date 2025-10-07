@@ -3,6 +3,7 @@ from bot_config import bot, token
 from src.commands.testcommands import general_setup
 from src.views.newinserver import newpeople_setup
 from src.services.bloxlink import bloxlink_setup
+from src.services.bd.config import bd_setup
 
 
 
