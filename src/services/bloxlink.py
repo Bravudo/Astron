@@ -3,6 +3,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from src.embeds.registerlog import send_register_embed 
 from src.json.jsoncommands import load, file_name, save
+from src.services.bd.config import save_db_new_user
 import os
 import requests
 load_dotenv()
@@ -64,6 +65,10 @@ async def findroblox(ctx, member):
                                      roblox_username=roblox_username,
                                      roblox_displayname=roblox_displayname
                                 )
+                                try:
+                                    await save_db_new_user(ctx, member.id, join_number, roblox_id, roblox_username, roblox_displayname)
+                                except Exception as e:
+                                     print(f'Erro ao tentar salvar os dados: {e}')
                             else: 
                                 print('Erro Roblox: Busca não realizada')
                                 return None

@@ -6,23 +6,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 api_test = os.getenv("database_url")
-print(api_test)
 db = mysql.connector.connect(
-    host=os.getenv("database_url").split('@')[1].split(':')[0],
-    port=os.getenv("database_url").split(':')[-1].split('/')[0],
-    user=os.getenv("database_url").split('//')[1].split(':')[0],
-    password=os.getenv("database_url").split(':')[2].split('@')[0],
-    database=os.getenv("database_url").split('/')[-1]
+        host=os.getenv("database_url").split('@')[1].split(':')[0],
+        port=os.getenv("database_url").split(':')[-1].split('/')[0],
+        user=os.getenv("database_url").split('//')[1].split(':')[0],
+        password=os.getenv("database_url").split(':')[2].split('@')[0],
+        database=os.getenv("database_url").split('/')[-1]
 )
 cursor = db.cursor()
+print(db)
+    
 
-@commands.command()
-async def search_dc_user_db(ctx, discord_id):
-    cursor.execute("SELECT dc_id, join_numebr, roblox_id, roblox_name, roblox_display FROM dc_user WHERE id = %s", ({discord_id},))
-    user = cursor.fetchone()
-    if user:
-        dc_id, join_number, roblox_id, roblox_name, roblox_display = user
-        print(user)
+async def save_db_new_user(ctx, dc_id, join_number, roblox_id, roblox_name, roblox_display):
+    try:
+        cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ({dc_id}, {join_number}, {roblox_id}, '{roblox_name}', '{roblox_display}')")
+    except Exception as e:
+        print(f'Erro: {e}')
+        await ctx.send(f'ERRO: Verifique o terminal.')
+
 
 
 @commands.command()
@@ -32,4 +33,4 @@ async def bd_log(ctx):
 
 async def bd_setup(bot):
     bot.add_command(bd_log)
-    bot.add_command(search_dc_user_db)
+    bot.add_command(save_db_new_user)
