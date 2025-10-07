@@ -19,7 +19,7 @@ print(db)
 
 async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_display):
     try:
-        cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ({dc_id}, {join_number}, {roblox_id}, '{roblox_name}', '{roblox_display}')")
+        cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ('{dc_id}', '{join_number}', '{roblox_id}', '{roblox_name}', '{roblox_display}')")
     except Exception as e:
         print(f'Erro: {e}')
 
