@@ -48,3 +48,4 @@ async def bd_log(ctx):
 
 async def bd_setup(bot):
     bot.add_command(bd_log)
+    bot.add_command(view_register)
