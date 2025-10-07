@@ -13,7 +13,7 @@ db = mysql.connector.connect(
         password=os.getenv("database_url").split(':')[2].split('@')[0],
         database=os.getenv("database_url").split('/')[-1]
 )
-cursor = db.cursor()
+cursor = db.cursor(dictionary=True)
 print(db)
     
 
@@ -26,23 +26,23 @@ async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_di
 @commands.command()
 async def view_register(ctx):
     try:
-        cursor.execute("SELECT * FROM dc_user")
+        cursor.execute("SELECT dc_id, join_number, roblox_id, roblox_name, roblox_display FROM dc_user")
         results = cursor.fetchall()
-        
+
         if not results:
-            print("Nenhum registro encontrado.")
-            await ctx.send("Nenhum registro encontrado no banco de dados.")
+            await ctx.send("Nenhum registro encontrado.")
             return
 
-        # Exibe via print no console
+        # Se vier como tupla (sem dictionary=True)
         for row in results:
-            print(f"DC ID: {row['dc_id']} | Join#: {row['join_number']} | Roblox: {row['roblox_name']} ({row['roblox_display']})")
+            dc_id, join_number, roblox_id, roblox_name, roblox_display = row
+            print(f"DC ID: {dc_id} | Join#: {join_number} | Roblox: {roblox_name} ({roblox_display})")
 
-        # E também manda um resumo no Discord
-        msg = "\n".join([f"{r['roblox_name']} ({r['roblox_display']})" for r in results])
-        await ctx.send(f"**Registros encontrados:**\n{msg}")
+        await ctx.send("Console railway")
+
     except Exception as e:
-        print(f'Erro: {e}')
+        print(f'Erro ao buscar registros: {e}')
+        await ctx.send("Erro ao buscar dados do banco.")
 
 @commands.command()
 async def bd_log(ctx):
