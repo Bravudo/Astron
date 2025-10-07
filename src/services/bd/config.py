@@ -23,7 +23,23 @@ async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_di
     except Exception as e:
         print(f'Erro: {e}')
 
+@commands.command()
+async def view_register(ctx):
+    try:
+        cursor.execute("SELECT * FROM dc_user")
+        results = cursor.fetchall()
+        
+        if not results:
+            print("Nenhum registro encontrado.")
+            await ctx.send("Nenhum registro encontrado no banco de dados.")
+            return
 
+        # Exibe via print no console
+        for row in results:
+            print(f"DC ID: {row['dc_id']} | Join#: {row['join_number']} | Roblox: {row['roblox_name']} ({row['roblox_display']})")
+
+    except Exception as e:
+        print(f'Erro: {e}')
 
 @commands.command()
 async def bd_log(ctx):
