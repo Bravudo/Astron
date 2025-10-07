@@ -15,14 +15,14 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 print(db)
+cursor.execute("ALTER TABLE dc_user MODIFY dc_id VARCHAR(50)")
     
 
-async def save_db_new_user(ctx, dc_id, join_number, roblox_id, roblox_name, roblox_display):
+async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_display):
     try:
         cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ({dc_id}, {join_number}, {roblox_id}, '{roblox_name}', '{roblox_display}')")
     except Exception as e:
         print(f'Erro: {e}')
-        await ctx.send(f'ERRO: Verifique o terminal.')
 
 
 
