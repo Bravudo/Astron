@@ -38,6 +38,9 @@ async def view_register(ctx):
         for row in results:
             print(f"DC ID: {row['dc_id']} | Join#: {row['join_number']} | Roblox: {row['roblox_name']} ({row['roblox_display']})")
 
+        # E também manda um resumo no Discord
+        msg = "\n".join([f"{r['roblox_name']} ({r['roblox_display']})" for r in results])
+        await ctx.send(f"**Registros encontrados:**\n{msg}")
     except Exception as e:
         print(f'Erro: {e}')
 
