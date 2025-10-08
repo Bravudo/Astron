@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
 from src.json.jsoncommands import load, save, file_name
-from src.services.bd.config import search_last_number
+from src.services.bd.config import search_last_number, search_same_data_user
 
 
 
@@ -30,34 +30,29 @@ class Register(discord.ui.View):
         guild = interaction.guild
         user = interaction.user
         await interaction.response.defer(ephemeral=True)
-        
-        #Carregar dados atuais e realizar a busca
-        data = load(file_name)
         uid = str(user.id)
-        join_number = (await search_last_number()) + 1
-        #Se o usuario já tiver entrado, recarrega seu número já salvo
-        if uid in data["user"]:
+
+
+        join_number = (await search_same_data_user(uid))
+        #Se o usuário não existir, cria um novo
+        if join_number == None:
+             join_number = (await search_last_number())
              apelido = user.nick or user.name
              new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
-
+             
+             #Tamanho máximo de nome
              if len(new_name) > 32:
                   new_name = new_name[:32]
                   
              await user.edit(nick=new_name)
              
-        #Se o usuario for novo, cria novas informações no json para salvar.
+        #Se o usuario já existir, utiliza as informações da primeira pesquisa
         else:
             apelido = user.nick or user.name
             new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
-            
-
             if len(new_name) > 32:
                   new_name = new_name[:32]
-
             await user.edit(nick=new_name)
-            data["user"][uid] = {"entrada": data["server"]["status"]["nextjoin"] }
-            data["server"]["status"]["nextjoin"] += 1
-            save(data, file_name)
 
 
         #Repassando a lista de cargos

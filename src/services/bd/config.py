@@ -24,6 +24,17 @@ async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_di
     except Exception as e:
         print(f'Erro: {e}')
 
+async def search_same_data_user(dc_id):
+     try:
+        cursor.execute(f"SELECT join_number from dc_user WHERE dc_id = %s",(dc_id,))
+        result = cursor.fetchone()
+        if result:
+            return result['join_number']
+        else:
+            return None
+     except Exception as e:
+        print(f'Erro: {e}')
+
 
 async def search_last_number():
     try:
@@ -31,7 +42,7 @@ async def search_last_number():
         result = cursor.fetchone()
         last = result['join_number'] or 0
         print(f'Ultimo número existente: {last}')
-        return last
+        return last + 1
     except Exception as e:
         print(f'Erro ao acessar o ultimo número de entrada: {e}')
 
