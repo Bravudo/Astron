@@ -88,7 +88,6 @@ class Register(discord.ui.View):
             print(f'Erro ao se registrar: {e}')
         finally:
              await asyncio.sleep(10)
-             global locked_button
              locked_button = False
 
 
