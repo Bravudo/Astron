@@ -19,7 +19,7 @@ add_member_roles = [member, verify]
 remove_member_roles = [noverify]
 #---------------#
 clanTag = "ASR"
-
+locked_button = False
 
 
 
@@ -33,6 +33,9 @@ class Register(discord.ui.View):
     @discord.ui.button(label="🌐", style=discord.ButtonStyle.primary, custom_id="register")
     async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
         global locked_button
+        guild = interaction.guild
+        user = interaction.user
+        uid = str(user.id)
 
         async def add_remove_rules(add, remove): 
             add_role = [guild.get_role(role_id) for role_id in add]
@@ -48,15 +51,10 @@ class Register(discord.ui.View):
         if locked_button == True:
             await interaction.response.send_message("⏳ Aguarde! Outro usuário está se registrando. (10s)", ephemeral=True)
             return
-        
         locked_button = True
             
         try:
-            guild = interaction.guild
-            user = interaction.user
             await interaction.response.defer(ephemeral=True)
-            uid = str(user.id)
-
 
             join_number = (await search_same_data_user(uid))
             #Se o usuário não existir, cria um novo
