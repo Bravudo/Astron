@@ -17,9 +17,8 @@ roblox_user = "https://users.roblox.com/v1/usernames/users"
 
 
 async def findroblox(ctx, member):
-            dados = load(file_name)
             uid = str(member.id)
-            join_number = (await search_last_number()) + 1
+            join_number = (await search_last_number())
             
             guild_id = ctx.guild.id
             discord_id = member.id
