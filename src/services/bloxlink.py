@@ -18,10 +18,9 @@ roblox_user = "https://users.roblox.com/v1/usernames/users"
 
 async def findroblox(ctx, member):
             uid = str(member.id)
-            join_number = (await search_last_number())
-            
             guild_id = ctx.guild.id
             discord_id = member.id
+            join_number = (await search_last_number())
 
             if isinstance(ctx, discord.Interaction):
              sender = ctx.response.send_message
@@ -31,10 +30,6 @@ async def findroblox(ctx, member):
                 sender = ctx.send
                 logchannel = ctx.guild.get_channel(registerlogchat)
 
-            if member is None:
-                await sender("Marque quem você quer procurar! Ex: !find @Tonhao")
-                return
-
             if not api_key:
                 print("Erro: chave da api não configurada")
             else: 
@@ -43,6 +38,8 @@ async def findroblox(ctx, member):
                     headers = {"Authorization": api_key, "Accept": "application/json"}
                     response = requests.get(url, headers=headers, timeout=10)
                     print(response.json())
+                    
+                    
                     if response.status_code == 200: 
                         data = response.json()
                         roblox_id = data.get("robloxID")

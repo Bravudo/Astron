@@ -18,15 +18,22 @@ print(db)
     
 
 async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_display):
-    try:
-        cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ('{dc_id}', '{join_number}', '{roblox_id}', '{roblox_name}', '{roblox_display}')")
-        #db.commit() PARA SALVAR OS DADOS INSERIDOS
-    except Exception as e:
-        print(f'Erro: {e}')
+        try:
+            cursor.execute(f"SELECT dc_id FROM dc_user WHERE dc_id = %s", (dc_id,))
+            result = cursor.fetchone()
+            if result:
+                print('Teste: Usuario já existe')
+                return
+            
+            cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ('{dc_id}', '{join_number}', '{roblox_id}', '{roblox_name}', '{roblox_display}')")
+            print(f'Teste: Usuário inserido: {roblox_display}')
+                #db.commit() PARA SALVAR OS DADOS INSERIDOS
+        except Exception as e:
+            print(f'Erro: {e}')
 
 async def search_same_data_user(dc_id):
      try:
-        cursor.execute(f"SELECT join_number from dc_user WHERE dc_id = %s",(dc_id,))
+        cursor.execute(f"SELECT join_number FROM dc_user WHERE dc_id = %s",(dc_id,))
         result = cursor.fetchone()
         if result:
             return result['join_number']

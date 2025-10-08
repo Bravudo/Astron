@@ -20,22 +20,36 @@ remove_member_roles = [noverify]
 #---------------#
 clanTag = "ASR"
 
-locked_button = False
+
+
 
 
 
 class Register(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
+        
 
     @discord.ui.button(label="🌐", style=discord.ButtonStyle.primary, custom_id="register")
     async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
-       
 
+        async def add_remove_rules(add, remove): 
+            add_role = [guild.get_role(role_id) for role_id in add]
+            remove_role = [guild.get_role(role_id) for role_id in remove]
+            if add_role:
+                await user.add_roles(*add_role) 
+            if remove_role:
+                await user.remove_roles(*remove_role)
+                return       
+        
+
+        
         if locked_button == True:
             await interaction.response.send_message("⏳ Aguarde! Outro usuário está se registrando. (10s)", ephemeral=True)
             return
-
+        global locked_button
+        locked_button = True
+            
         try:
             guild = interaction.guild
             user = interaction.user
@@ -63,22 +77,17 @@ class Register(discord.ui.View):
                 if len(new_name) > 32:
                     new_name = new_name[:32]
                 await user.edit(nick=new_name)
+                await add_remove_rules(add_member_roles, remove_member_roles)
+                return
 
-
-            #Repassando a lista de cargos
-            add_role = [guild.get_role(role_id) for role_id in add_member_roles]
-            remove_role = [guild.get_role(role_id) for role_id in remove_member_roles]
-            if add_role:
-                    await user.add_roles(*add_role) 
-            if remove_role:
-                    await user.remove_roles(*remove_role)
-
+            await add_remove_rules(add_member_roles, remove_member_roles)
             #Pesquisa sobre informações do roblox
             await findroblox(interaction, user)
         except Exception as e:
             print(f'Erro ao se registrar: {e}')
         finally:
-             asyncio.sleep(10)
+             await asyncio.sleep(10)
+             global locked_button
              locked_button = False
 
 
