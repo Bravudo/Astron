@@ -60,6 +60,9 @@ class Register(discord.ui.View):
             #Se o usuário não existir, cria um novo
             if join_number == None:
                 join_number = (await search_last_number())
+                if len(join_number) == 1:
+                    join_number = "0" + join_number
+
                 apelido = user.nick or user.name
                 new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
                 
@@ -72,6 +75,8 @@ class Register(discord.ui.View):
             #Se o usuario já existir, utiliza as informações da primeira pesquisa
             else:
                 apelido = user.nick or user.name
+                if len(join_number) == 1:
+                    join_number = "0" + join_number
                 new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
                 if len(new_name) > 32:
                     new_name = new_name[:32]
