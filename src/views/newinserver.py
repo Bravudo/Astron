@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
@@ -19,6 +20,8 @@ remove_member_roles = [noverify]
 #---------------#
 clanTag = "ASR"
 
+locked_button = False
+
 
 
 class Register(discord.ui.View):
@@ -27,46 +30,56 @@ class Register(discord.ui.View):
 
     @discord.ui.button(label="🌐", style=discord.ButtonStyle.primary, custom_id="register")
     async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
-        guild = interaction.guild
-        user = interaction.user
-        await interaction.response.defer(ephemeral=True)
-        uid = str(user.id)
+       
+
+        if locked_button == True:
+            await interaction.response.send_message("⏳ Aguarde! Outro usuário está se registrando. (10s)", ephemeral=True)
+            return
+
+        try:
+            guild = interaction.guild
+            user = interaction.user
+            await interaction.response.defer(ephemeral=True)
+            uid = str(user.id)
 
 
-        join_number = (await search_same_data_user(uid))
-        #Se o usuário não existir, cria um novo
-        if join_number == None:
-             join_number = (await search_last_number())
-             apelido = user.nick or user.name
-             new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
-             
-             #Tamanho máximo de nome
-             if len(new_name) > 32:
-                  new_name = new_name[:32]
-                  
-             await user.edit(nick=new_name)
-             
-        #Se o usuario já existir, utiliza as informações da primeira pesquisa
-        else:
-            apelido = user.nick or user.name
-            new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
-            if len(new_name) > 32:
-                  new_name = new_name[:32]
-            await user.edit(nick=new_name)
+            join_number = (await search_same_data_user(uid))
+            #Se o usuário não existir, cria um novo
+            if join_number == None:
+                join_number = (await search_last_number())
+                apelido = user.nick or user.name
+                new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
+                
+                #Tamanho máximo de nome
+                if len(new_name) > 32:
+                    new_name = new_name[:32]
+                    
+                await user.edit(nick=new_name)
+                
+            #Se o usuario já existir, utiliza as informações da primeira pesquisa
+            else:
+                apelido = user.nick or user.name
+                new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
+                if len(new_name) > 32:
+                    new_name = new_name[:32]
+                await user.edit(nick=new_name)
 
 
-        #Repassando a lista de cargos
-        add_role = [guild.get_role(role_id) for role_id in add_member_roles]
-        remove_role = [guild.get_role(role_id) for role_id in remove_member_roles]
-        if add_role:
-                await user.add_roles(*add_role) 
-        if remove_role:
-                await user.remove_roles(*remove_role)
+            #Repassando a lista de cargos
+            add_role = [guild.get_role(role_id) for role_id in add_member_roles]
+            remove_role = [guild.get_role(role_id) for role_id in remove_member_roles]
+            if add_role:
+                    await user.add_roles(*add_role) 
+            if remove_role:
+                    await user.remove_roles(*remove_role)
 
-        #Pesquisa sobre informações do roblox
-        await findroblox(interaction, user)
-
-
+            #Pesquisa sobre informações do roblox
+            await findroblox(interaction, user)
+        except Exception as e:
+            print(f'Erro ao se registrar: {e}')
+        finally:
+             asyncio.sleep(10)
+             locked_button = False
 
 
 @commands.command()
