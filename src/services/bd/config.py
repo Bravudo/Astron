@@ -20,6 +20,7 @@ print(db)
     
 
 async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_display):
+        global save_on
         try:
             cursor.execute(f"SELECT dc_id FROM dc_user WHERE dc_id = %s", (dc_id,))
             result = cursor.fetchone()
@@ -82,11 +83,14 @@ async def view_register(ctx):
 @commands.is_owner()
 @commands.command()
 async def perm_bd_save(ctx):
+    global save_on 
     if save_on == True:
         save_on = False
+        print('Modo Atual: Temporariamente')
         await ctx.send("Modo Atual: Temporariamente")
     else:
         save_on = True
+        print('Modo Atual: Permanentemente')
         await ctx.send("Modo Atual: Permanentemente")
         
 
