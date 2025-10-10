@@ -30,13 +30,12 @@ async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_di
             
             cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ('{dc_id}', '{join_number}', '{roblox_id}', '{roblox_name}', '{roblox_display}')")
             print(f'Teste: Usuário inserido: {roblox_display}')
-                #db.commit() PARA SALVAR OS DADOS INSERIDOS
-        except Exception as e:
-            print(f'Erro: {e}')
-
             #Salvar no Banco
             if save_on == True:
                 db.commit()
+        except Exception as e:
+            print(f'Erro: {e}')
+
 
 async def search_same_data_user(dc_id):
      try:
