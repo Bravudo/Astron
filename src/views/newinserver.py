@@ -63,7 +63,7 @@ class Register(discord.ui.View):
                     join_number = "0" + join_number
 
                 apelido = user.nick or user.name
-                new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
+                new_name = f"‹ {join_number} › {clanTag} {apelido}"
                 
                 #Tamanho máximo de nome
                 if len(new_name) > 32:
@@ -77,7 +77,7 @@ class Register(discord.ui.View):
                 if len(str(join_number)) == 1:
                     join_number = str("0" + join_number)
 
-                new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
+                new_name = f"‹ {join_number} › {clanTag} {apelido}"
                 if len(new_name) > 32:
                     new_name = new_name[:32]
                 await user.edit(nick=new_name)
