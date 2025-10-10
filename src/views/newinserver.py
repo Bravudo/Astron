@@ -12,10 +12,9 @@ from src.services.bd.config import search_last_number, search_same_data_user
 noverify = 1420818499437330524
 
 #Colocar
-member = 1420643710961455175
 verify = 1420859819950215278
 
-add_member_roles = [member, verify]
+add_member_roles = [verify]
 remove_member_roles = [noverify]
 #---------------#
 clanTag = "ASR"
@@ -77,7 +76,7 @@ class Register(discord.ui.View):
                 apelido = user.nick or user.name
                 if len(str(join_number)) == 1:
                     join_number = str("0" + join_number)
-                    
+
                 new_name = f"⥼ {join_number} ⥽ {clanTag} {apelido}"
                 if len(new_name) > 32:
                     new_name = new_name[:32]

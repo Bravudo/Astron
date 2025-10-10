@@ -4,6 +4,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+save_on = True
+
 load_dotenv()
 api_test = os.getenv("database_url")
 db = mysql.connector.connect(
@@ -30,6 +32,10 @@ async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_di
                 #db.commit() PARA SALVAR OS DADOS INSERIDOS
         except Exception as e:
             print(f'Erro: {e}')
+
+            #Salvar no Banco
+            if save_on == True:
+                db.commit()
 
 async def search_same_data_user(dc_id):
      try:
@@ -73,11 +79,24 @@ async def view_register(ctx):
         print(f'Erro ao buscar registros: {e}')
         await ctx.send("Erro ao buscar dados do banco.")
 
+@commands.is_owner()
+@commands.command()
+async def perm_bd_save(ctx):
+    if save_on == True:
+        save_on = False
+        await ctx.send("Modo Atual: Temporariamente")
+    else:
+        save_on = True
+        await ctx.send("Modo Atual: Permanentemente")
+        
+
+
 @commands.command()
 async def bd_log(ctx):
     print(f'API-TEST-1: {api_test}')
-    await ctx.send('print bd')
+    await ctx.send('print api key')
 
 async def bd_setup(bot):
     bot.add_command(bd_log)
     bot.add_command(view_register)
+    bot.add_command(perm_bd_save)

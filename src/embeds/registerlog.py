@@ -24,6 +24,6 @@ async def send_register_embed(channel, user_id, join_number, roblox_id, roblox_u
         embed.add_field(name=f"{RobloxIcon} ID", value=roblox_id, inline=True)
         
     else:
-        embed.add_field(name=f"🚫 Sem dados Roblox {RobloxIcon}", value="\u200b", inline=True)
+        embed.add_field(name=f"{RobloxIcon} Sem dados Roblox 🚫", value="\u200b", inline=True)
     
     await channel.send(embed=embed)
