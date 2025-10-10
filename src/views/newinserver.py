@@ -62,7 +62,7 @@ class Register(discord.ui.View):
                 if len(str(join_number)) == 1:
                     join_number = "0" + join_number
 
-                apelido = user.nick or user.name
+                apelido = apelido = user.display_name
                 new_name = f"‹ {join_number} › {clanTag} {apelido}"
                 
                 #Tamanho máximo de nome
@@ -73,7 +73,7 @@ class Register(discord.ui.View):
                 
             #Se o usuario já existir, utiliza as informações da primeira pesquisa
             else:
-                apelido = user.nick or user.name
+                apelido = apelido = user.display_name
                 if len(str(join_number)) == 1:
                     join_number = str("0" + join_number)
 
