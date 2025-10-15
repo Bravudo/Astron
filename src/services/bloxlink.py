@@ -87,6 +87,9 @@ async def findroblox(ctx, member):
                                 roblox_displayname='None'
                             )
                             try:
+                                roblox_id = "0"
+                                roblox_username = "None"
+                                roblox_displayname = "None"
                                 await save_db_new_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
                             except Exception as e:
                                 print(f'Erro ao tentar salvar os dados: {e}')
