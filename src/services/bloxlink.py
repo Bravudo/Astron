@@ -82,7 +82,7 @@ async def findroblox(ctx, member):
                                 logchannel, 
                                 member.id,
                                 join_number=join_number,
-                                roblox_id='None',
+                                roblox_id=0,
                                 roblox_username='None',
                                 roblox_displayname='None'
                             )
