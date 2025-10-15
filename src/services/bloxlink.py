@@ -82,9 +82,9 @@ async def findroblox(ctx, member):
                                 logchannel, 
                                 member.id,
                                 join_number=join_number,
-                                roblox_id=None,
-                                roblox_username=None,
-                                roblox_displayname=None
+                                roblox_id='None',
+                                roblox_username='None',
+                                roblox_displayname='None'
                             )
                             try:
                                 await save_db_new_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
