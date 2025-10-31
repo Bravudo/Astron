@@ -1,6 +1,10 @@
 import discord
 from discord.ext import commands
+import aiohttp
+import io
 import sys
+
+copiada = {}
 
 @commands.command()
 @commands.has_permissions(administrator=True)
@@ -9,8 +13,6 @@ async def off(ctx):
     await ctx.send('Desligando...')
     await ctx.bot.close()
     raise sys.exit(0)
-
-copiada = {}
 
 
 @commands.command()
@@ -30,8 +32,8 @@ async def copiar(ctx, message_id: int):
         await ctx.message.add_reaction("✅")  
 
     except Exception as e:
-        await ctx.reply(f"ERRO: {e}")
-        print (f'ERRO COPIANDO A MENSAGEM: {e}')
+        await ctx.reply(f"ERRO ao copiar: `{e}`")
+        print(f'ERRO COPIANDO A MENSAGEM: {e}')
 
 
 @commands.command()
@@ -45,11 +47,18 @@ async def colar(ctx):
     embeds = [discord.Embed.from_dict(e) for e in dados["embeds"]]
 
     arquivos = []
-    for url in dados["attachments"]:
-        arquivo = await discord.File.from_url(url)
-        arquivos.append(arquivo)
+
+    # --- Corrigido: baixar anexos com aiohttp ---
+    async with aiohttp.ClientSession() as session:
+        for url in dados["attachments"]:
+            async with session.get(url) as resp:
+                if resp.status == 200:
+                    data = io.BytesIO(await resp.read())
+                    filename = url.split("/")[-1]
+                    arquivos.append(discord.File(data, filename=filename))
 
     await ctx.send(content=dados["content"], embeds=embeds, files=arquivos)
+
 
 async def general_setup(bot):
     bot.add_command(off)
