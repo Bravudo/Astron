@@ -70,7 +70,7 @@ async def search_last_number():
         print(f'Erro ao acessar o ultimo número de entrada: {e}')
 
 @commands.command()
-async def view_register(ctx):
+async def register_log(ctx):
     check_connection()
     try:
         cursor.execute("SELECT dc_id, join_number, roblox_id, roblox_name, roblox_display FROM dc_user")
@@ -82,9 +82,8 @@ async def view_register(ctx):
 
         # Se vier como tupla (sem dictionary=True)
         for row in results:
-            print(f"DC ID: {row['dc_id']} | Join#: {row['join_number']} | Roblox: {row['roblox_name']} ({row['roblox_display']})")
-
-        await ctx.send("Console railway")
+            print(f"DC ID: {row['dc_id']} | Join#: {row['join_number']} | R ID: {row['roblox_id']} |Roblox: {row['roblox_name']} ({row['roblox_display']})")
+        await ctx.send("Railway: Log Enviado")
 
     except Exception as e:
         print(f'Erro ao buscar registros: {e}')

@@ -48,7 +48,6 @@ async def colar(ctx):
 
     arquivos = []
 
-    # --- Corrigido: baixar anexos com aiohttp ---
     async with aiohttp.ClientSession() as session:
         for url in dados["attachments"]:
             async with session.get(url) as resp:
