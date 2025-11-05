@@ -1,6 +1,6 @@
 import discord
 
-RobloxIcon = "<:roblox:1423390785482784849>"
+RobloxIcon = "<:roblox:1430379231552209038>"
 DiscordIcon = "<:discord:1423392381910253638>"
 
 
