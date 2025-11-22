@@ -2,8 +2,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from src.embeds.registerlog import send_register_embed 
-from src.json.jsoncommands import load, file_name, save
-from src.services.bd.config import save_db_new_user, search_last_number
+# from src.json.jsoncommands import load, file_name, save
 import os
 import requests
 load_dotenv()
@@ -19,7 +18,7 @@ roblox_user = "https://users.roblox.com/v1/usernames/users"
 async def findroblox(ctx, member):
             guild_id = ctx.guild.id
             discord_id = member.id
-            join_number = (await search_last_number())
+            # join_number = (await search_last_number())
 
             if isinstance(ctx, discord.Interaction):
              sender = ctx.response.send_message
@@ -55,13 +54,14 @@ async def findroblox(ctx, member):
                                 await send_register_embed(
                                      logchannel, 
                                      member.id,
-                                     join_number=join_number,
+                                     join_number="Número Entrada",
                                      roblox_id=roblox_id,
                                      roblox_username=roblox_username,
                                      roblox_displayname=roblox_displayname
                                 )
                                 try:
-                                    await save_db_new_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
+                                     print('Momento de salvar')
+                                #    " await save_db_new_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)"
                                 except Exception as e:
                                      print(f'Erro ao tentar salvar os dados: {e}')
                             else: 
@@ -81,7 +81,7 @@ async def findroblox(ctx, member):
                             await send_register_embed(
                                 logchannel, 
                                 member.id,
-                                join_number=join_number,
+                                join_number="Número Entrada",
                                 roblox_id=0,
                                 roblox_username='None',
                                 roblox_displayname='None'
@@ -90,7 +90,8 @@ async def findroblox(ctx, member):
                                 roblox_id = "0"
                                 roblox_username = "None"
                                 roblox_displayname = "None"
-                                await save_db_new_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
+                                print('Momento de salvar conta dc sem roblox')
+                                # await save_db_new_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
                             except Exception as e:
                                 print(f'Erro ao tentar salvar os dados: {e}')
                             return None

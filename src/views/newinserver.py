@@ -2,8 +2,8 @@ import asyncio
 import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
-from src.json.jsoncommands import load, save, file_name
-from src.services.bd.config import search_last_number, search_same_data_user
+# from src.json.jsoncommands import load, save, file_name
+# from src.services.bd.config import search_last_number, search_same_data_user
 
 
 
@@ -55,10 +55,10 @@ class Register(discord.ui.View):
         try:
             await interaction.response.defer(ephemeral=True)
 
-            join_number = (await search_same_data_user(uid))
+            # join_number = (await search_same_data_user(uid))
             #Se o usuário não existir, cria um novo
             if join_number == None:
-                join_number = str(await search_last_number())
+                # join_number = str(await search_last_number())
                 if len(str(join_number)) == 1:
                     join_number = "0" + join_number
 

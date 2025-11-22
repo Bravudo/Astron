@@ -1,115 +1,118 @@
-import mysql.connector
 import os
-import discord
+import asyncpg
 from discord.ext import commands
 from dotenv import load_dotenv
-
-save_on = True
-
 load_dotenv()
-api_test = os.getenv("database_url")
-
-def check_connection():
-    global db, cursor
-    try:
-        db.ping(reconnect=True, attempts=3, delay=2)
-    except:
-        db = mysql.connector.connect(
-                host=os.getenv("database_url").split('@')[1].split(':')[0],
-                port=os.getenv("database_url").split(':')[-1].split('/')[0],
-                user=os.getenv("database_url").split('//')[1].split(':')[0],
-                password=os.getenv("database_url").split(':')[2].split('@')[0],
-                database=os.getenv("database_url").split('/')[-1]
-        )
-        cursor = db.cursor(dictionary=True)
-        print("Reconectado ao banco")
-
-    
-
-async def save_db_new_user(dc_id, join_number, roblox_id, roblox_name, roblox_display):
-        check_connection()
-        global save_on
-        try:
-            cursor.execute(f"SELECT dc_id FROM dc_user WHERE dc_id = %s", (dc_id,))
-            result = cursor.fetchone()
-            if result:
-                print('Teste: Usuario já existe')
-                return
-            
-            cursor.execute(f"INSERT INTO dc_user (dc_id, join_number, roblox_id, roblox_name, roblox_display) VALUES ('{dc_id}', '{join_number}', '{roblox_id}', '{roblox_name}', '{roblox_display}')")
-            print(f'Teste: Usuário inserido: {roblox_display}')
-            #Salvar no Banco
-            if save_on == True:
-                db.commit()
-        except Exception as e:
-            print(f'Erro: {e}')
-
-
-async def search_same_data_user(dc_id):
-     check_connection()
-     try:
-        cursor.execute(f"SELECT join_number FROM dc_user WHERE dc_id = %s",(dc_id,))
-        result = cursor.fetchone()
-        if result:
-            return result['join_number']
-        else:
-            return None
-     except Exception as e:
-        print(f'Erro: {e}')
-
-
-async def search_last_number():
-    check_connection()
-    try:
-        cursor.execute("SELECT MAX(join_number) as join_number FROM dc_user")
-        result = cursor.fetchone()
-        last = result['join_number'] or 0
-        print(f'Ultimo número existente: {last}')
-        return last + 1
-    except Exception as e:
-        print(f'Erro ao acessar o ultimo número de entrada: {e}')
+conn = None
 
 @commands.command()
-async def register_log(ctx):
-    check_connection()
-    try:
-        cursor.execute("SELECT dc_id, join_number, roblox_id, roblox_name, roblox_display FROM dc_user")
-        results = cursor.fetchall()
+@commands.has_permissions(administrator=True)
+async def bd_connect_c(ctx):
+    await bd_connect()
 
-        if not results:
-            await ctx.send("Nenhum registro encontrado.")
-            return
-
-        # Se vier como tupla (sem dictionary=True)
-        for row in results:
-            print(f"DC ID: {row['dc_id']} | Join#: {row['join_number']} | R ID: {row['roblox_id']} |Roblox: {row['roblox_name']} ({row['roblox_display']})")
-        await ctx.send("Railway: Log Enviado")
-
-    except Exception as e:
-        print(f'Erro ao buscar registros: {e}')
-        await ctx.send("Erro ao buscar dados do banco.")
-
-@commands.is_owner()
-@commands.command()
-async def perm_bd_save(ctx):
-    global save_on 
-    if save_on == True:
-        save_on = False
-        print('Modo Atual: Temporariamente')
-        await ctx.send("Modo Atual: Temporariamente")
-    else:
-        save_on = True
-        print('Modo Atual: Permanentemente')
-        await ctx.send("Modo Atual: Permanentemente")
+#Criação da Váriavel Global para primeiro uso
+async def get_conn():
+    global conn
+    if conn is None or conn.is_closed():
+        conn = await bd_connect()
+    return conn
         
 
+#Conexão com o banco Astryn
+async def bd_connect():
+    global conn
+
+    try:
+        db_url = os.getenv('database_url')
+        conn = await asyncpg.connect(db_url)
+        print('Conectado ao Banco Astryn')
+        return conn
+
+    except Exception as error:
+        print(f'Erro na conexão com o banco: {error}')
+
+
+
+#---------------TESTES---------------#
+@commands.command()
+@commands.has_permissions(administrator=True)
+async def create_db(ctx):
+    conn = await get_conn()
+    try:
+        if conn is None or conn.is_closed():
+            await bd_connect()
+        await conn.execute("""
+        create table if not exists usuario (
+                    id serial primary key,
+                    discord_id bigint unique,
+                    roblox_id bigint unique,
+                    roblox_username text,
+                    roblox_displayname text
+                    );
+        """)
+        await conn.close()
+        print('Tabela Criada')
+
+    except Exception as e:
+        print(f'Erro na criação da tabela user: {e}')
+
 
 @commands.command()
-async def bd_log(ctx):
-    print(f'API-TEST-1: {api_test}')
-    await ctx.send('print api key')
+@commands.has_permissions(administrator=True)
+async def create_test_user(ctx):
+    conn = await get_conn()
+    try:
+        if conn is None or conn.is_closed():
+            await bd_connect()
+
+        query = """
+        INSERT INTO usuario (discord_id, roblox_id, roblox_username, roblox_displayname)
+        values ($1, $2, $3, $4)
+        """
+
+        await conn.execute(query, 0,0,'BabyUser', 'BabyDisplay')
+        print('usuario criado')
+    except Exception as e:
+        print(f'Erro ao criar usuário de teste: {e}')
+
+@commands.command()
+@commands.has_permissions(administrator=True)
+async def check_user(ctx, discord_id: int):
+    conn = await get_conn()
+    try:
+
+        query = """
+        SELECT * FROM usuario WHERE discord_id = $1
+        """
+        result = await conn.fetchrow(query, discord_id)
+
+        if result:
+            await ctx.send(f"Usuário encontrado:\n```\n{result}\n```")
+        else:
+            await ctx.send(" Nenhum usuário econtrado")
+
+    except Exception as e:
+        print(f'Erro ao verificar usuário: {e}')
+        await ctx.send(f"Ocorreu um erro: {e}")
+
+@commands.command()
+@commands.has_permissions(administrator=True)
+async def delete_user_test(ctx, discord_id: int):
+    conn = await get_conn()
+    try:
+        query = """
+        DELETE FROM usuario WHERE discord_id = $1
+        """
+        await conn.execute(query, discord_id)
+        await ctx.send(f'Usuário {discord_id} deletado')
+    except Exception as e:
+        print(f'Erro ao deletar o usuário')
+
 
 async def bd_setup(bot):
-    bot.add_command(bd_log)
-    bot.add_command(register_log)
-    bot.add_command(perm_bd_save)
+    bot.add_command(bd_connect_c)
+    bot.add_command(create_db)
+    bot.add_command(create_test_user)
+    bot.add_command(check_user)
+    bot.add_command(delete_user_test)
+
