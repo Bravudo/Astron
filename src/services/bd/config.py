@@ -24,7 +24,7 @@ async def bd_connect():
     try:
         db_url = os.getenv('database_url')
         conn = await asyncpg.connect(db_url)
-        print('Conectado ao Banco Astryn')
+        print('💫 - Conexão com Banco Astryn')
         return conn
     except Exception as error:
         print(f'Erro na conexão com o banco: {error}')
@@ -49,7 +49,7 @@ async def create_user_db(ctx):
                     roblox_displayname text
                     );
         """)
-        await ctx.reply('Banco usuario criado')
+        print('Banco usuario criado')
 
     except Exception as e:
         print(f'Erro na criação da tabela user: {e}')
@@ -85,10 +85,10 @@ async def check_last_number():
     try:
             query = "select coalesce(max(join_number), 0) from usuario;"
             last_number = await conn.fetchval(query)
-            return int(last_number)
+            return int(last_number) + 1
     except Exception as e:
             print(f'Erro ao buscar ultimo número: {e}')
-            return 0
+            return 1
 
 
 async def check_same_data_user(user_id:int):
@@ -127,20 +127,6 @@ async def check_user(ctx, discord_id: int):
 
 @commands.command()
 @commands.has_permissions(administrator=True)
-async def delete_user_test(ctx, discord_id: int):
-    conn = await get_conn()
-    try:
-        query = """
-        DELETE FROM usuario WHERE discord_id = $1
-        """
-        await conn.execute(query, discord_id)
-        await ctx.send(f'Usuário {discord_id} deletado')
-    except Exception as e:
-        print(f'Erro ao deletar o usuário')
-
-
-@commands.command()
-@commands.has_permissions(administrator=True)
 async def delete_bd(ctx):
     conn = await get_conn()
     try:
@@ -149,7 +135,7 @@ async def delete_bd(ctx):
         """
 
         await conn.execute(query)
-        await ctx.reply('Tabela Deletada')
+        print('Tabela Deletada')
         
     except Exception as e:
         print(f'Erro ao deletar o banco')
@@ -159,6 +145,6 @@ async def bd_setup(bot):
     bot.add_command(bd_connect_c)
     bot.add_command(create_user_db)
     bot.add_command(check_user)
-    bot.add_command(delete_user_test)
     bot.add_command(delete_bd)
+    print('Bd Setup: 🟩')
 

@@ -29,7 +29,6 @@ class Register(discord.ui.View):
         def __init__(self):
             super().__init__(timeout=None)
             
-
         @discord.ui.button(label="🌐", style=discord.ButtonStyle.primary, custom_id="register")
         async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
             global locked_button
@@ -55,7 +54,7 @@ class Register(discord.ui.View):
         
             try:
                 await interaction.response.defer(ephemeral=True)
-                
+                username = user.display_name
                 join_number = (await check_same_data_user(int(user_id)))
             
                 #Se o usuário não existir, cria um novo
@@ -63,8 +62,7 @@ class Register(discord.ui.View):
                     join_number = int(await check_last_number())
                     if len(str(join_number)) == 1:
                         join_number_name = "0" + str(join_number)
-                    apelido = user.display_name
-                    new_name = f"‹ {join_number_name} › {clanTag} {apelido}"
+                    new_name = f"‹ {join_number_name} › {clanTag} {username}"
                     
                     #Tamanho máximo de nome
                     if len(new_name) > 32:
@@ -74,12 +72,11 @@ class Register(discord.ui.View):
                     
                 #Se o usuario já existir, utiliza as informações da primeira pesquisa
                 else:
-                    apelido = user.display_name
                     if len(str(join_number)) == 1:
                         join_number_name = "0" + str(join_number)
 
 
-                    new_name = f"‹ {join_number_name} › {clanTag} {apelido}"
+                    new_name = f"‹ {join_number_name} › {clanTag} {username}"
                     if len(new_name) > 32:
                         new_name = new_name[:32]
                     await user.edit(nick=new_name)
@@ -97,13 +94,16 @@ class Register(discord.ui.View):
     except Exception as e:
         print(f'Erro ao tentar spawnar o botão: {e}')
 
-
 @commands.command()
 @commands.has_permissions(administrator=True)
 async def register(ctx):
     view = Register()
     await ctx.send("Clique no botão para se Registrar!", view=view)
 
+
+async def reduction_name(name):
+    name = name[:32]
+    return name
 
 
 async def newpeople_setup(bot):

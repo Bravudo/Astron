@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from src.embeds.registerlog import send_register_embed 
-# from src.json.jsoncommands import load, file_name, save
 from src.services.bd.config import save_user
 import os
 import requests
@@ -28,6 +27,7 @@ async def findroblox(ctx, member, join_number):
                 sender = ctx.send
                 logchannel = ctx.guild.get_channel(registerlogchat)
 
+                
             if not api_key:
                 print("Erro: chave da api não configurada")
             else: 
@@ -35,7 +35,7 @@ async def findroblox(ctx, member, join_number):
                     url = f"https://api.blox.link/v4/public/guilds/{guild_id}/discord-to-roblox/{discord_id}"
                     headers = {"Authorization": api_key, "Accept": "application/json"}
                     response = requests.get(url, headers=headers, timeout=10)
-                    print(response.json())
+                    # print(response.json())
                     
                     
                     if response.status_code == 200: 
@@ -48,7 +48,7 @@ async def findroblox(ctx, member, join_number):
                                 roblox_data = roblox_response.json()
                                 roblox_username = roblox_data.get("name")
                                 roblox_displayname = roblox_data.get("displayName") 
-                                print((f'id: {roblox_id}, user:{roblox_username}'))
+                                print((f'Resultado de Pesquisa Bloxlink: id: {roblox_id}, user:{roblox_username}'))
                             
               
                                 await send_register_embed(
