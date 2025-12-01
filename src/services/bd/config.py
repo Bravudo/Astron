@@ -2,6 +2,7 @@ import os
 import asyncpg
 from discord.ext import commands
 from dotenv import load_dotenv
+
 load_dotenv()
 conn = None
 
@@ -141,10 +142,15 @@ async def delete_bd(ctx):
         print(f'Erro ao deletar o banco')
 
 
-async def bd_setup(bot):
-    bot.add_command(bd_connect_c)
-    bot.add_command(create_user_db)
-    bot.add_command(check_user)
-    bot.add_command(delete_bd)
-    print('Bd Setup: 🟩')
+async def database_setup(bot):
+    try:
+        bot.add_command(bd_connect_c)
+        bot.add_command(create_user_db)
+        bot.add_command(check_user)
+        bot.add_command(delete_bd)
+        print('🟦 - Setup Database')
+    except Exception as e:
+        print(f'🟥 - Setup Database')
+        print(f'Erro no banco de dados: {e}')
+         
 

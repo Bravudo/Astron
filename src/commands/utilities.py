@@ -1,10 +1,9 @@
 import discord
 from discord.ext import commands
 import aiohttp
-import io
 import sys
+import io
 
-copiada = {}
 
 @commands.command()
 @commands.has_permissions(administrator=True)
@@ -15,6 +14,7 @@ async def off(ctx):
     raise sys.exit(0)
 
 
+copiada = {}
 @commands.command()
 @commands.has_permissions(administrator=True)
 async def copiar(ctx, message_id: int):
@@ -32,8 +32,8 @@ async def copiar(ctx, message_id: int):
         await ctx.message.add_reaction("✅")  
 
     except Exception as e:
-        await ctx.reply(f"ERRO ao copiar: `{e}`")
-        print(f'ERRO COPIANDO A MENSAGEM: {e}')
+        await ctx.reply(f"Erro ao copiar mensagem: `{e}`")
+        print(f'Erro ao copiar mensagem: {e}')
 
 
 @commands.command()
@@ -59,7 +59,7 @@ async def colar(ctx):
     await ctx.send(content=dados["content"], embeds=embeds, files=arquivos)
 
 
-async def general_setup(bot):
-    bot.add_command(off)
+async def utilities_setup(bot):
     bot.add_command(copiar)
     bot.add_command(colar)
+    bot.add_command(off)

@@ -2,7 +2,6 @@ import asyncio
 import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
-# from src.json.jsoncommands import load, save, file_name
 from src.services.bd.config import check_last_number, check_same_data_user
 
 
@@ -19,11 +18,6 @@ remove_member_roles = [noverify]
 #---------------#
 clanTag = "ASR"
 locked_button = False
-
-
-
-
-
 class Register(discord.ui.View):
     try:
         def __init__(self):
@@ -49,9 +43,7 @@ class Register(discord.ui.View):
                 await interaction.response.send_message("⏳ Aguarde! Outro usuário está se registrando. (10s)", ephemeral=True)
                 return
             locked_button = True
-                
-
-        
+                   
             try:
                 await interaction.response.defer(ephemeral=True)
                 username = user.display_name
@@ -59,7 +51,8 @@ class Register(discord.ui.View):
             
                 #Se o usuário não existir, cria um novo
                 if join_number == None:
-                    join_number = int(await check_last_number())
+                    join_number = int(await check_last_number()) 
+
                     if len(str(join_number)) == 1:
                         join_number_name = "0" + str(join_number)
                     new_name = f"‹ {join_number_name} › {clanTag} {username}"
@@ -74,17 +67,12 @@ class Register(discord.ui.View):
                 else:
                     if len(str(join_number)) == 1:
                         join_number_name = "0" + str(join_number)
-
-
                     new_name = f"‹ {join_number_name} › {clanTag} {username}"
-                    if len(new_name) > 32:
-                        new_name = new_name[:32]
-                    await user.edit(nick=new_name)
-                    await add_remove_rules(add_member_roles, remove_member_roles)
-                    return
+                if len(new_name) > 32:
+                    new_name = new_name[:32]
 
+                await user.edit(nick=new_name)
                 await add_remove_rules(add_member_roles, remove_member_roles)
-                #Pesquisa sobre informações do roblox
                 await findroblox(interaction, user, int(join_number))
             except Exception as e:
                 print(f'Erro ao se registrar: {e}')
@@ -104,7 +92,6 @@ async def register(ctx):
 async def reduction_name(name):
     name = name[:32]
     return name
-
 
 async def newpeople_setup(bot):
     bot.add_command(register)
