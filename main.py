@@ -7,7 +7,6 @@ from src.services.bd.config import database_setup
 from src.slash_commands.main_slash import slash_commands_setup
 
 
-
 async def main():
     await slash_commands_setup(bot)
     await commands_setup(bot)
@@ -31,3 +30,13 @@ async def on_ready():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    
+    
+    
+    
+
+
+    
+
+
+    

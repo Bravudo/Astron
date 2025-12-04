@@ -38,6 +38,8 @@ class Register(discord.ui.View):
                 if remove_role:
                     await user.remove_roles(*remove_role)
                     return       
+
+            user_id = int(user.id)    
             
             if locked_button == True:
                 await interaction.response.send_message("⏳ Aguarde! Outro usuário está se registrando. (10s)", ephemeral=True)
@@ -73,6 +75,7 @@ class Register(discord.ui.View):
 
                 await user.edit(nick=new_name)
                 await add_remove_rules(add_member_roles, remove_member_roles)
+                await add_remove_rules(guild, user, add_member_roles, remove_member_roles)
                 await findroblox(interaction, user, int(join_number))
             except Exception as e:
                 print(f'Erro ao se registrar: {e}')
@@ -92,6 +95,15 @@ async def register(ctx):
 async def reduction_name(name):
     name = name[:32]
     return name
+
+async def add_remove_rules(guild, user, add, remove): 
+    add_role = [guild.get_role(role_id) for role_id in add]
+    remove_role = [guild.get_role(role_id) for role_id in remove]
+    if add_role:
+        await user.add_roles(*add_role) 
+    if remove_role:
+        await user.remove_roles(*remove_role)
+        return   
 
 async def newpeople_setup(bot):
     bot.add_command(register)

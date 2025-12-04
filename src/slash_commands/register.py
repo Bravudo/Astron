@@ -1,15 +1,15 @@
 from discord import app_commands
 from discord.ext import commands
 import discord
-from src.views.newinserver import reduction_name
+from src.views.newinserver import reduction_name, add_remove_rules,  add_member_roles, remove_member_roles 
 from src.services.bloxlink import findroblox
 from src.services.bd.config import check_last_number, check_same_data_user
-
+from src.slash_commands.default import completed_symbol
 
 class slash_register(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
-        
+
     @app_commands.command(
         name="registrar",
         description="Escolha um usuário e um número para forçar o registro"
@@ -31,19 +31,19 @@ class slash_register(commands.Cog):
         
             await findroblox(interaction, user, int(number))
             print(f'User Register - {user} - Número: {number}')
-            
-            
-             #Se o usuário não existir, cria um novo
 
-
+            #Se o usuário não existir, cria um novo
             num_str = str(number).zfill(2)
             apelido = user.display_name
-            new_name = f"‹ {num_str} › ASR {apelido}"
-                        
+            new_name = f"‹ {num_str} › ASR {apelido}" 
             new_name = await reduction_name(new_name)
-            await user.edit(nick=new_name)
 
-            await interaction.followup.send("Usuário Registrado ", ephemeral=True)
+            guild = interaction.guild
+            await add_remove_rules(guild, user, add_member_roles, remove_member_roles)
+            await user.edit(nick=new_name)
+            await interaction.followup.send(f"{completed_symbol} <@{user.id}> Registrado!", ephemeral=True)
 
         except Exception as e:
-            print(f'Erro ao registrar usuário forçadamente: {e}')
+            print(f'Erro ao registrar usuário utilizando /registrar: {e}')
+            await interaction.followup.send(f"Erro ao registrar <@{user.id}>!", ephemeral=True)
+
