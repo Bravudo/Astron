@@ -1,6 +1,6 @@
+import discord
 from discord import app_commands
 from discord.ext import commands
-import discord
 from src.views.newinserver import reduction_name, add_remove_rules,  add_member_roles, remove_member_roles 
 from src.services.bloxlink import findroblox
 from src.services.bd.config import check_last_number, check_same_data_user
