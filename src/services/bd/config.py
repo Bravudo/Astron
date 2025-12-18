@@ -56,9 +56,6 @@ async def create_user_db(ctx):
         print(f'Erro na criação da tabela user: {e}')
 
 
-
-
-
 async def save_user(discord_id:int , join_number: int, roblox_id:int, roblox_username:str, roblox_displayname:str):
     conn = await get_conn()
     try:
@@ -79,6 +76,35 @@ async def save_user(discord_id:int , join_number: int, roblox_id:int, roblox_use
             print('Usuário salvo - DC + ROBLOX')
     except Exception as e:
         print(f'Erro ao criar usuário de teste: {e}')
+
+async def check_user(discord_id: int):
+     conn = await get_conn()
+     try: 
+            query = """
+            SELECT * FROM usuario WHERE discord_id = $1 
+            """
+            user = await conn.fetchrow(query, discord_id)
+            if user is None:
+                 print(f"check_user: Usuário não encontrado -> ID procurado: {discord_id}")
+                 return None
+            
+            return user
+     except Exception as e:
+          print(f"Usuário não existente ou erro no banco de dados: {e}")
+
+async def remove_user(discord_id: int):
+     conn = await get_conn()
+     try: 
+            query = """
+            DELETE FROM usuario WHERE discord_id = $1 
+            """
+            await conn.fetchrow(query, discord_id)
+            return True
+     
+     except Exception as e:
+          print(f"remove_user: ERRO ao excluir usuário: {e}")
+          
+
 
 
 async def check_last_number():
@@ -108,7 +134,7 @@ async def check_same_data_user(user_id:int):
 
 @commands.command()
 @commands.has_permissions(administrator=True)
-async def check_user(ctx, discord_id: int):
+async def check_user_from_register(ctx, discord_id: int):
     conn = await get_conn()
     try:
 
@@ -125,6 +151,7 @@ async def check_user(ctx, discord_id: int):
     except Exception as e:
         print(f'Erro ao verificar usuário: {e}')
         await ctx.send(f"Ocorreu um erro: {e}")
+
 
 @commands.command()
 @commands.has_permissions(administrator=True)
@@ -146,7 +173,7 @@ async def database_setup(bot):
     try:
         bot.add_command(bd_connect_c)
         bot.add_command(create_user_db)
-        bot.add_command(check_user)
+        bot.add_command(check_user_from_register)
         bot.add_command(delete_bd)
         print('🟦 - Setup Database')
     except Exception as e:
