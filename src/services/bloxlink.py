@@ -2,20 +2,17 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from src.embeds.registerlog import send_register_embed 
-from src.services.bd.config import save_user
+from src.services.bd.config import Database
 import os
 import requests
 load_dotenv()
-
-
-
 
 registerlogchat = 1422434707416547500
 api_key = os.getenv("blox_link_token")
 roblox_user = "https://users.roblox.com/v1/usernames/users"
 
-
 async def findroblox(ctx, member, join_number):
+            db = Database()
             guild_id = ctx.guild.id
             discord_id = member.id
 
@@ -27,7 +24,7 @@ async def findroblox(ctx, member, join_number):
                 sender = ctx.send
                 logchannel = ctx.guild.get_channel(registerlogchat)
 
-                
+            
             if not api_key:
                 print("Erro: chave da api não configurada")
             else: 
@@ -62,7 +59,7 @@ async def findroblox(ctx, member, join_number):
                                 try:
                                      print('Salvando Informações do Roblox')
                                      print(f'Info: dcid: {member.id} - join: {join_number} - roblox user: {roblox_username} ')
-                                     await save_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
+                                     await db.insert.user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
                                 except Exception as e:
                                      print(f'Erro ao tentar salvar os dados: {e}')
                             else: 
@@ -92,7 +89,7 @@ async def findroblox(ctx, member, join_number):
                                 roblox_username = "None"
                                 roblox_displayname = "None"
                                 print('Salvando conta discord sem roblox')
-                                await save_user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
+                                await db.insert.user(member.id, join_number, roblox_id, roblox_username, roblox_displayname)
                             except Exception as e:
                                 print(f'Erro ao tentar salvar os dados: {e}')
                             return None

@@ -2,7 +2,7 @@ import asyncio
 import discord
 from discord.ext import commands
 from src.services.bloxlink import findroblox
-from src.services.bd.config import check_last_number, check_same_data_user
+from src.services.bd.config import Database
 
 
 
@@ -22,6 +22,7 @@ class Register(discord.ui.View):
     try:
         def __init__(self):
             super().__init__(timeout=None)
+            self.db = Database()
             
         @discord.ui.button(label="🌐", style=discord.ButtonStyle.primary, custom_id="register")
         async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -49,11 +50,11 @@ class Register(discord.ui.View):
             try:
                 await interaction.response.defer(ephemeral=True)
                 username = user.display_name
-                join_number = (await check_same_data_user(int(user_id)))
+                join_number = (await self.db.select.same_user_data(int(user_id)))
             
                 #Se o usuário não existir, cria um novo
                 if join_number == None:
-                    join_number = int(await check_last_number()) 
+                    join_number = int(await self.db.select.last_join_number()) 
 
                     if len(str(join_number)) == 1:
                         join_number_name = "0" + str(join_number)
@@ -75,7 +76,6 @@ class Register(discord.ui.View):
 
                 await user.edit(nick=new_name)
                 await add_remove_rules(add_member_roles, remove_member_roles)
-                await add_remove_rules(guild, user, add_member_roles, remove_member_roles)
                 await findroblox(interaction, user, int(join_number))
             except Exception as e:
                 print(f'Erro ao se registrar: {e}')

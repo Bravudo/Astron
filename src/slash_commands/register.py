@@ -3,13 +3,15 @@ from discord import app_commands
 from discord.ext import commands
 from src.views.newinserver import reduction_name, add_remove_rules,  add_member_roles, remove_member_roles 
 from src.services.bloxlink import findroblox
-from src.services.bd.config import check_last_number, check_same_data_user, check_user,remove_user
+from src.services.bd.config import Database
 from src.slash_commands.default import completed_symbol
+
 
 #Registro forçado via comando
 class slash_register(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
+        self.db = Database()
 
     @app_commands.command(
         name="registrar",
@@ -23,12 +25,13 @@ class slash_register(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def user_register(self,interaction: discord.Interaction, user: discord.Member, number:int | None = None):
         try:
+
             await interaction.response.defer(ephemeral=True)
             
             if number is None:
-                number = await check_same_data_user(user.id)
+                number = await self.db.select.same_user_data(user.id)
             if number is None:
-                number = await check_last_number()
+                number = await self.db.select.last_join_number()
         
             await findroblox(interaction, user, int(number))
             print(f'User Register - {user} - Número: {number}')
@@ -51,6 +54,7 @@ class slash_register(commands.Cog):
 class slash_check(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.db = Database()
 
     @app_commands.command(
         name="verificarregistro",
@@ -64,7 +68,7 @@ class slash_check(commands.Cog):
         await interaction.response.defer()
         try:
             int_id = int(id)
-            user = await check_user(int_id)
+            user = await self.db.select.user(int_id)
 
             if user is None:
                 await interaction.followup.send(f"❌ **Usuário não encontrado** -> ID Procurado: {id}")
@@ -78,6 +82,7 @@ class slash_check(commands.Cog):
 class slash_remove(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
+        self.db = Database()
 
     @app_commands.command(
         name="removerregistro",
@@ -90,8 +95,9 @@ class slash_remove(commands.Cog):
     async def remover_user_id(self, interaction: discord.Interaction, id: str):
         await interaction.response.defer()
         try:
+
             int_id = int(id)
-            remove = await remove_user(int_id)
+            remove = await self.db.delete.user(int_id)
 
             if remove is True:
                 await interaction.followup.send(f"❌ **Usuário Removido**: {id}")
